@@ -118,7 +118,7 @@
     var result = [];
 
     _.each(collection,function(item,i,collection) {
-      result.push(iterator(item));
+      result.push(iterator(item,i,collection));
     });
 
     return result;
@@ -137,7 +137,7 @@
     // TIP: map is really handy when you want to transform an array of
     // values into a new array of values. _.pluck() is solved for you
     // as an example of this.
-    return _.map(collection, function(item){
+    return _.map(collection, function(item) {
       return item[key];
     });
   };
@@ -163,6 +163,16 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if( accumulator === undefined ) {
+      accumulator = collection[0];
+      collection = _.last(collection,collection.length-1);
+    }
+
+    _.each(collection,function(item) {
+      accumulator = iterator(accumulator,item);
+    });
+
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
