@@ -168,8 +168,8 @@
       collection = _.last(collection,collection.length-1);
     }
 
-    _.each(collection,function(item) {
-      accumulator = iterator(accumulator,item);
+    _.each(collection,function(item,i) {
+      accumulator = iterator(accumulator,item,i,collection);
     });
 
     return accumulator;
@@ -189,8 +189,8 @@
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
     iterator = iterator || _.identity;
-    return _.reduce(collection,function(passed,item) {
-      return !passed ? passed : !!iterator(item);
+    return _.reduce(collection,function(passed,item,i) {
+      return !passed ? passed : !!iterator(item,i);
     },true);
   };
 
@@ -198,6 +198,20 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    var passed = false;
+    iterator = iterator || _.identity;
+
+    if(!collection.length) {
+      return false;
+    }
+
+    return _.every(collection,function(item,i) {
+      if(!passed && iterator(item)) { 
+        passed = true;
+      }
+      
+      return i === collection.length-1 ? passed : true;
+    });
   };
 
 
