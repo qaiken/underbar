@@ -38,7 +38,9 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    if( n === 0 ) return [];
+    if( n === 0 ) {
+      return [];
+    }
     return n === undefined ? array[array.length-1] : array.slice(-n);
   };
 
@@ -70,7 +72,7 @@
     var result = -1;
 
     _.each(array, function(item, index) {
-      if (item === target && result === -1) {
+      if ( item === target && result === -1 ) {
         result = index;
       }
     });
@@ -83,7 +85,9 @@
     var result = [];
 
     _.each(collection,function(item,i,collection) {
-      if( test(item) ) result.push(item);
+      if( test(item) ) {
+        result.push(item);
+      }
     });
 
     return result;
@@ -103,7 +107,9 @@
     var result = [];
 
     _.each(array,function(item,i,array) {
-      if( _.indexOf(result,item) === -1 ) result.push(item);
+      if( _.indexOf(result,item) === -1 ) {
+        result.push(item);
+      }
     });
 
     return result;
@@ -206,10 +212,10 @@
     }
 
     return _.every(collection,function(item,i) {
-      if(!passed && iterator(item)) { 
+      if( !passed && iterator(item) ) {
         passed = true;
       }
-      
+
       return i === collection.length-1 ? passed : true;
     });
   };
