@@ -258,7 +258,7 @@
 
     _.each(objs,function(currObj) {
       for(var k in currObj) {
-        if(obj[k] === undefined) {
+        if( obj[k] === undefined ) {
           obj[k] = currObj[k];
         }
       }
@@ -308,6 +308,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var results = {};
+
+    return function() {
+      var argStr = [].slice.call(arguments).toString();
+      if ( results[argStr] === undefined ) {
+        results[argStr] = func.apply(null,arguments);
+      }
+
+      return results[argStr];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
