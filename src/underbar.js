@@ -345,14 +345,17 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var end, rand, i;
     array = array.slice();
 
-    for(var i = array.length-1; i > 0; i--) {
-      var end = array[i];
-      var rand = Math.floor(Math.random() * i);
+    for(i = array.length-1; i > 0; i--) {
+      end = array[i];
+      rand = Math.floor(Math.random() * i);
+
       array[i] = array[rand];
       array[rand] = end;
     }
+
     return array;
   };
 
@@ -368,6 +371,10 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    return _.map(collection,function(item) {
+      var fnc = item[functionOrKey] || functionOrKey;
+      return fnc.apply(item,args);
+    });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
