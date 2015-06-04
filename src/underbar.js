@@ -397,15 +397,13 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
-    var result = [];
-
     var arrays = [].slice.call(arguments);
 
     var longest = _.reduce(arrays,function(longest,array) {
       return longest.length > array.length ? longest : array;
     },[]);
 
-    _.each(longest,function(item,i) {
+    return _.reduce(longest,function(result,item,i) {
       var array = [];
 
       _.each(arrays,function(item) {
@@ -413,9 +411,9 @@
       });
 
       result.push(array);
-    });
 
-    return result;
+      return result;
+    },[]);
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -426,13 +424,11 @@
     result = result || [];
 
     _.each(nestedArray,function(item) {
-
       if(Array.isArray(item)) {
         _.flatten(item,result);
       } else {
         result.push(item);
       }
-
     });
 
     return result;
@@ -441,12 +437,9 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
-    var result = [];
-
     var arrays = [].slice.call(arguments);
 
-    _.each(arrays[0],function(item) {
-
+    return _.reduce(arrays[0],function(result,item) {
       var inArrays = _.every(arrays,function(array) {
         return _.indexOf(array,item) !== -1;
       });
@@ -454,19 +447,17 @@
       if(inArrays) {
         result.push(item);
       }
-    });
 
-    return result;
+      return result;
+    },[]);
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var result = [];
-
     var otherArrays = [].slice.call(arguments,1);
 
-    _.each(array,function(item) {
+    return _.reduce(array,function(result,item) {
 
       var inArrays = _.some(otherArrays,function(array) {
         return _.indexOf(array,item) !== -1;
@@ -475,9 +466,9 @@
       if(!inArrays) {
         result.push(item);
       }
-    });
 
-    return result;
+      return result;
+    },[]);
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
