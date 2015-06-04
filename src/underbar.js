@@ -423,6 +423,19 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    result = result || [];
+
+    _.each(nestedArray,function(item) {
+
+      if(Array.isArray(item)) {
+        _.flatten(item,result);
+      } else {
+        result.push(item);
+      }
+
+    });
+
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
