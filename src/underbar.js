@@ -477,5 +477,28 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    var waiting = false;
+    var first = true;
+    var latest;
+
+    var schedule = function() {
+      if (!waiting) {
+        waiting = true;
+        setTimeout(function() {
+          waiting = false;
+          latest = func.apply(null,arguments);
+        }.bind(null,arguments), wait);
+      }
+    };
+
+    return function() {
+      if(first) {
+        first = false;
+        return latest = func.apply(null,arguments);
+      }
+
+      schedule.apply(null,arguments);
+      return latest;
+    }
   };
 }());
