@@ -186,7 +186,7 @@
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(collection, function(wasFound, item) {
-      return wasFound ? wasFound : item === target;
+      return wasFound || item === target;
     }, false);
   };
 
@@ -204,20 +204,10 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    var passed = false;
     iterator = iterator || _.identity;
-
-    if(!collection.length) {
-      return false;
-    }
-
-    return _.every(collection,function(item,i) {
-      if( !passed && iterator(item) ) {
-        passed = true;
-      }
-
-      return i === collection.length-1 ? passed : true;
-    });
+    return _.reduce(collection,function(passed,item) {
+      return passed || !!iterator(item);
+    },false);
   };
 
 
@@ -311,12 +301,12 @@
     var results = {};
 
     return function() {
-      var argStr = [].slice.call(arguments).toString();
-      if ( results[argStr] === undefined ) {
-        results[argStr] = func.apply(null,arguments);
+      var args = [].slice.call(arguments);
+      if ( results[args] === undefined ) {
+        results[args] = func.apply(null,args);
       }
 
-      return results[argStr];
+      return results[args];
     };
   };
 
@@ -399,21 +389,35 @@
   _.zip = function() {
     var arrays = [].slice.call(arguments);
 
+    var result = [];
+
     var longest = _.reduce(arrays,function(longest,array) {
-      return longest.length > array.length ? longest : array;
-    },[]);
+      return longest > array.length ? longest : array.length;
+    },0);
 
-    return _.reduce(longest,function(result,item,i) {
-      var array = [];
+    for(var i = 0; i < longest; ++i) {
+      var tmpArray = [];
 
-      _.each(arrays,function(item) {
-        array.push(item[i]);
+      _.each(arrays,function(array) {
+        tmpArray.push(array[i]);
       });
 
-      result.push(array);
+      result.push(tmpArray);
+    }
 
-      return result;
-    },[]);
+    return result;
+
+    // return _.reduce(longest,function(result,item,i) {
+    //   var array = [];
+
+    //   _.each(arrays,function(item) {
+    //     array.push(item[i]);
+    //   });
+
+    //   result.push(array);
+
+    //   return result;
+    // },[]);
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -437,9 +441,9 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
-    var arrays = [].slice.call(arguments);
+    var arrays = [].slice.call(arguments,1);
 
-    return _.reduce(arrays[0],function(result,item) {
+    return _.reduce(arguments[0],function(result,item) {
       var inArrays = _.every(arrays,function(array) {
         return _.indexOf(array,item) !== -1;
       });
